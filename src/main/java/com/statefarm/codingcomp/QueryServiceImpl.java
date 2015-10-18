@@ -215,7 +215,7 @@ public class QueryServiceImpl implements QueryService {
     	
     	for (Email email : emailList){
     		
-    		if ( emailsFromUsers.containsKey(email.getFrom()) ){
+    		if ( emailsFromUsers.containsKey(email.getFrom()) && emailsFromUsers.containsKey(email.getTo()) ){
     			emails.add(email);
     			
     		}
@@ -228,26 +228,25 @@ public class QueryServiceImpl implements QueryService {
     public Set<String> emailAddressesByDegrees( String email, int degrees ) throws Exception {
         
     	TreeSet<String> emailsByDegree = new TreeSet<>();
-    	ArrayList<String> sendEmails = new ArrayList<String>(0);
+    	ArrayList<String> sendFromEmails = new ArrayList<String>(0);
     	
-    	// Get all the emails send by this email
+    	
+    	// Get all the emails send to this email
     	for ( Email i : emailList){
     		
-    		if (i == null || i.getFrom() == null) continue;
+    		if (i == null || i.getTo() == null) continue;
     		
-    		if ( i.getFrom().equals(email) ){
-    			
-    			// Avoid duplicates
-    			if (i.getTo()!= null && !sendEmails.contains(i.getTo())){
-    				sendEmails.add(i.getTo());
-    			}
-    				
+    		if ( i.getTo().equals(email) ){
+    			sendFromEmails.add(i.getFrom());	
     		}
     	}
     	
-    	for (String i : sendEmails){
+    	for (String i : sendFromEmails){
     			
     			for (Email j : emailList){
+    				
+    				if ( j.getTo() == null) continue;
+    				
     				if ( i.equals( j.getTo() )){
     					emailsByDegree.add(j.getFrom());
     				}
