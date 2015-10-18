@@ -1,11 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.sf.codingcomp</groupId>
-	<artifactId>CodingCompSetup</artifactId>
+	<groupId>com.statefarm.codingcomp</groupId>
+	<artifactId>2015CodingComp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SF Coding Comp Setup</name>
-	<description>This project will ensure that your workstation has all the necessary tools to compete.</description>
+	<name>2015 State Farm Coding Competition</name>
 
 	<repositories>
 		<repository>
@@ -38,7 +37,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.unitils</groupId>
+			<artifactId>unitils-core</artifactId>
+			<version>3.4.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -56,4 +61,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
