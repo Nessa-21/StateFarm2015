@@ -56,6 +56,9 @@ public class ReaderTest {
 		calendar = reader.getCalendar("2014-10-08T04:01:57Z");
 		
 		assertEquals(2014,calendar.get(Calendar.YEAR));
+		assertEquals(10, calendar.get(Calendar.MONTH));
+		assertEquals(10, calendar.get(Calendar.MONTH));
+		
 		
 	}
 	
