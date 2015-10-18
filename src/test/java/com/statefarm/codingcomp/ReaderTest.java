@@ -2,6 +2,7 @@ package com.statefarm.codingcomp;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -9,6 +10,7 @@ import java.util.TimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.statefarm.codingcomp.model.Email;
 import com.statefarm.codingcomp.model.User;
 import com.statefarm.codingcomp.reader.Reader;
 
@@ -50,17 +52,27 @@ public class ReaderTest {
 	}
 	
 	@Test
-	public void getDateTest(){
-		
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-		calendar = reader.getCalendar("2014-10-08T04:01:57Z");
-		
-		assertEquals(2014,calendar.get(Calendar.YEAR));
-		assertEquals(10, calendar.get(Calendar.MONTH));
-		assertEquals(10, calendar.get(Calendar.MONTH));
-		
+	public void getAllEmails() throws Exception{
+		ArrayList<Email> emails = reader.getAllEmails();
+		assertNotNull(emails);
+		assertTrue( emails.size() > 0);
 		
 	}
+	
+	@Test 
+	public void noEmailHasNullDateTest() throws Exception{
+		ArrayList<Email> emails = reader.getAllEmails();
+		
+		for (Email i : emails){
+			
+			assertNotNull(i.getSent());
+			assertNotNull(i.getSent().getTime());
+		}
+		
+	}
+	
+	
+	
 	
 	
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import com.statefarm.codingcomp.model.Email;
 import com.statefarm.codingcomp.model.User;
@@ -129,35 +130,131 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public Map<User, List<Email>> emailsFromOurUsers() throws Exception {
-        Map<User, List<Email>> emailsFromUsers = new HashMap<User, List<Email>>();
+        Map<User, List<Email>> emailsFromUsers = new HashMap<User, List<Email>>(0);
         
-        for( String userKey : userList.keySet()){
-        	emailsFromUsers.put(userList.get(userKey), new ArrayList<Email>());
+        
+        // Group Emails my from-emails
+        HashMap<String,ArrayList<Email> > groupByFromEmail = new HashMap<>(0);
+        
+        for (Email email : emailList){
+        	
+        	String key = email.getFrom();
+        	
+        	if ( key == null){
+        		continue;
+        	}
+        	
+        	if (!groupByFromEmail.containsKey(key)){
+        		groupByFromEmail.put(key, new ArrayList<Email>());
+        	}
+        
+        	groupByFromEmail.get(key).add(email);
         }
         
-//        for(Email email : emailList){
-//        	String from = email.getFrom();
-//        	if(emailsFromUsers.containsValue(User))
-//        }
-        return null;
+        
+        // Group Users when they are the emails senders
+        for( User user : userList.values()){
+        	
+        	ArrayList<Email> email  = groupByFromEmail.get(user.getEmail());
+        	
+        	if ( email != null)
+        		emailsFromUsers.put(user, groupByFromEmail.get(user.getEmail()));
+        }
+        
+        return emailsFromUsers;
     }
 
     @Override
     public Map<User, List<Email>> emailsToOurUsers() throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+    	Map<User, List<Email>> emailsFromUsers = new HashMap<User, List<Email>>(0);
+    	
+    	// Group Emails my to-emails
+        HashMap<String,ArrayList<Email> > groupByToEmail = new HashMap<>(0);
+        
+        for (Email email : emailList){
+        	
+        	String key = email.getTo();
+        	
+        	if ( key == null){
+        		continue;
+        	}
+        	
+        	if (!groupByToEmail.containsKey(key)){
+        		groupByToEmail.put(key, new ArrayList<Email>());
+        	}
+        	groupByToEmail.get(key).add(email);
+        }
+        
+        // Group Users when they are the emails senders
+        for( User user : userList.values()){
+        	
+        	ArrayList<Email> email  = groupByToEmail.get(user.getEmail());
+        	if ( email != null)
+        		emailsFromUsers.put(user, groupByToEmail.get(user.getEmail()));
+        }
+        
+        return emailsFromUsers;
+        
     }
 
     @Override
     public List<Email> emailsToUserFromUser() throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+    	Map<String, String> emailsFromUsers = new HashMap<>(1);
+    	ArrayList<Email> emails = new ArrayList<Email>();
+    	
+    	// Store all of our user user emails in a map.
+    	for (User user : userList.values()){
+    		
+    		if (user != null){
+    			
+    			if( !emailsFromUsers.containsKey(user.getEmail())){
+    				emailsFromUsers.put(user.getEmail(), null);
+    			}
+    		}
+    	}
+    	
+    	for (Email email : emailList){
+    		
+    		if ( emailsFromUsers.containsKey(email.getFrom()) ){
+    			emails.add(email);
+    			
+    		}
+    	}
+    	
+        return emails;
     }
 
     @Override
     public Set<String> emailAddressesByDegrees( String email, int degrees ) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        
+    	TreeSet<String> emailsByDegree = new TreeSet<>();
+    	ArrayList<String> sendEmails = new ArrayList<String>(0);
+    	
+    	// Get all the emails send by this email
+    	for ( Email i : emailList){
+    		
+    		if (i == null || i.getFrom() == null) continue;
+    		
+    		if ( i.getFrom().equals(email) ){
+    			
+    			// Avoid duplicates
+    			if (i.getTo()!= null && !sendEmails.contains(i.getTo())){
+    				sendEmails.add(i.getTo());
+    			}
+    				
+    		}
+    	}
+    	
+    	for (String i : sendEmails){
+    			
+    			for (Email j : emailList){
+    				if ( i.equals( j.getTo() )){
+    					emailsByDegree.add(j.getFrom());
+    				}
+    			}
+    	}
+    	
+        return emailsByDegree;
     }
 
     @Override

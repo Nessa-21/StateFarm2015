@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -57,82 +57,23 @@ public class Reader {
        		
     		currentFile = read(nodeCount,"mail.txt");
     		for(String i : currentFile){
-        		saveEmail(emails,i);
+        		String[] tokens = i.split(",");
+        		
+        		String dateTmp = tokens[2].substring(0, tokens[2].length()-1);
+        		String[] dateTokens = dateTmp.split("T");
+        		
+        		SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        		
+        		Email email = new Email(tokens[0], tokens[1], sdf.parse(dateTokens[0]+" "+dateTokens[1]));
+        		
+        		emails.add(email);
         	}
     		nodeCount++;
     	}
     	return emails;
     }
     
-    public void saveEmail(ArrayList<Email> emails, String currentLine){
-    	
-    	if(currentLine == null || currentLine.length() <= 0 ){
-    		return;
-    	}
-    	
-    	ArrayList<String> data = new ArrayList<String>();
-    	String currentData = "";
-    	
-    	// Save to-email, from-email, date
-    	for (char i : currentLine.toCharArray() ){
-    		
-    		if ( i == ','){
-    			data.add(currentData);
-    			currentData = "";
-    			continue;
-    		}
-    		currentData += String.valueOf(i);
-    	}
-        data.add(currentData);
-    	
-    	// Check an id email and email exist
-    	if ( data.size() == 3){
-    		
-    		String dateString = data.get(2);
-    		Calendar calendar = getCalendar(dateString);
-    		
-    		if (calendar != null){
-    		  emails.add(new Email(data.get(0),data.get(1),calendar.getTime()));
-    		}
-    	}
-    	
-    }
-    
-	public Calendar getCalendar(String dateString){
-    	
-		
-		dateString = dateString.replaceAll("Z", "");
-		String[] dataArray = dateString.split("T");
-		
-		if ( dataArray.length != 2){
-			return null;
-		}
-		
-		String[] dateArray = dataArray[0].split("-");
-		String[] timeArray = dataArray[1].split(":");
-    	ArrayList<Integer> dateData = new ArrayList<>();
-    	
-    	for (String i : dateArray){
-    		dateData.add(Integer.valueOf(i));
-    	}
-    	
-    	for (String i : timeArray){
-    		dateData.add(Integer.valueOf(i));
-    	}
-    	
-    	if (dateData.size() == 6 ){
-    		
-    	    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-    	    calendar.set(
-    	    		dateData.get(0),dateData.get(1),
-    	    		dateData.get(2),dateData.get(3),
-    	    		dateData.get(4),dateData.get(5)
-    	    		);
-    		return calendar;
-    	}
-    	
-    	return null;
-    }
+   
     
     public HashMap<String,User> getAllUsers() throws Exception{
     	
