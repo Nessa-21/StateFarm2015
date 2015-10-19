@@ -234,10 +234,10 @@ public class QueryServiceImpl implements QueryService {
     	// Get all the emails send to this email
     	for ( Email i : emailList){
     		
-    		if (i == null || i.getTo() == null) continue;
+    		if (i == null || i.getFrom() == null) continue;
     		
-    		if ( i.getTo().equals(email) ){
-    			sendFromEmails.add(i.getFrom());	
+    		if ( i.getFrom().equals(email) ){
+    			sendFromEmails.add(i.getTo());	
     		}
     	}
     	

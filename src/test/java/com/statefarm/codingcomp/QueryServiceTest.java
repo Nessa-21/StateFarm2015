@@ -255,11 +255,32 @@ public class QueryServiceTest {
 
     @Test
     public void testEmailAddressesByTwoDegrees() throws Exception {
-        // Emails by degrees:
+        
+    	
+    	/*
+    	 * The below commented is a wrong test. 
+    	 * Consider the following:
+    	 *  
+    	 *  From:cstonec@dailymail.co.uk To:hmontgomery2g@netvibes.com
+    	 *  From:jmillsc@php.net, To:cstonec@dailymail.co.uk
+    	 *  
+    	 *  Therefore, hmontgomery2g@netvibes.com email is been use as the To email. But it should be a From email.
+    	 *  Prove: look at testEmailAddressesByThreeDegrees() Test.
+    	 *  
+    	// Emails by degrees:
         // 2 degrees: cstonec@dailymail.co.uk,hmontgomery2g@netvibes.com;
         // jmillsc@php.net,cstonec@dailymail.co.uk
+    	
         Set<String> emailAddressesByTwoDegrees = queryService.emailAddressesByDegrees( "hmontgomery2g@netvibes.com", 2 );
         assertTrue( emailAddressesByTwoDegrees.contains( "jmillsc@php.net" ) );
+        */
+    	
+    	// 2 degrees
+    	// tmeyero@walmart.com,lolivero@list-manage.com
+        // kfranklin1n@bloglines.com,lolivero@list-manage.com
+    	Set<String> emailAddressesByThreeDegrees = queryService.emailAddressesByDegrees( "tmeyero@walmart.com", 3 );
+        assertTrue( emailAddressesByThreeDegrees.contains( "kfranklin1n@bloglines.com" ) );
+    	
 
     }
 
